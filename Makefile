@@ -19,9 +19,6 @@ help:
 	@echo "  - make test"
 	@echo
 
-#
-# Create instructlab AI container images
-#
 .PHONY:
 install:
 	./install.sh
@@ -33,6 +30,10 @@ build:
 .PHONY:
 test:
 	./ci.sh
+
+.PHONY:
+codespell:
+	codespell -w
 
 .PHONY: clean
 clean:

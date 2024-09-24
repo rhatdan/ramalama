@@ -252,8 +252,6 @@ function clean_setup() {
             "rm -t 0 --all --force --ignore"
     )
     for action in "${actions[@]}"; do
-#FIXME        _run_ramalama_quiet $action
-
         # The -f commands should never exit nonzero, but if they do we want
         # to know about it.
         #   FIXME: someday: also test for [[ -n "$output" ]] - can't do this
@@ -274,14 +272,6 @@ function clean_setup() {
             fi
         fi
     done
-
-    # Clean up all models except those desired.
-    # 2023-06-26 REMINDER: it is tempting to think that this is clunky,
-    # wouldn't it be safer/cleaner to just 'rm -a' then '_prefetch $IMAGE'?
-    # Yes, but it's also tremendously slower: 29m for a CI run, to 39m.
-    # Image loads are slow.
-    found_needed_image=
-    _run_ramalama_quiet list
 
     for line in "${lines[@]}"; do
         set $line

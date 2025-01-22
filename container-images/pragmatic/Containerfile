@@ -1,0 +1,6 @@
+ARG IMAGE=quay.io/ramalama/ramalama:latest
+FROM $IMAGE
+
+ARG GPU=cpu
+COPY ./build_pragmatic.sh /tmp/
+RUN sh /tmp/build_pragmatic.sh $GPU

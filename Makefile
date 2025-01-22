@@ -12,10 +12,14 @@ PATH := $(PATH):$(HOME)/.local/bin
 default: help
 
 help:
-	@echo "Build Container"
+	@echo "Build Container Image"
 	@echo
 	@echo "  - make build"
 	@echo "  - make build IMAGE=ramalama"
+	@echo
+	@echo "Build RAG Container Image"
+	@echo
+	@echo "  - make build-rag IMAGE=quay.io/ramalama/ramalama GPU=ramalama"
 	@echo
 	@echo "Build docs"
 	@echo
@@ -77,9 +81,13 @@ install: docs completions
 build:
 	./container_build.sh build $(IMAGE)
 
-.PHONY: build_rm
-build_rm:
+.PHONY: build-rm
+build-rm:
 	./container_build.sh -r build $(IMAGE)
+
+.PHONY: build-rag
+build-rag:
+	podman build --build-arg IMAGE=${IMAGE} --build-arg GPU=${GPU} -t ${IMAGE}-rag container-images/pragmatic
 
 .PHONY: install-docs
 install-docs: docs

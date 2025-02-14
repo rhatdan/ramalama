@@ -39,6 +39,7 @@ rm_container_image() {
 
 add_entrypoint() {
     containerfile=$(mktemp)
+    trap 'rm -f "${containerfile}"' EXIT
     cat > ${containerfile} <<EOF
 FROM $2
 ENTRYPOINT [ "/usr/bin/$3.sh" ]

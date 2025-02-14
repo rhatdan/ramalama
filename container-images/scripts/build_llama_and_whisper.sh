@@ -6,8 +6,8 @@ available() {
 
 dnf_install_intel_gpu() {
   local intel_rpms=("intel-oneapi-mkl-sycl-devel" "intel-oneapi-dnnl-devel" \
-                  "intel-oneapi-compiler-dpcpp-cpp" "intel-level-zero" \
-                  "oneapi-level-zero" "oneapi-level-zero-devel" "intel-compute-runtime")
+		  "intel-oneapi-compiler-dpcpp-cpp" "intel-level-zero" \
+		  "oneapi-level-zero" "oneapi-level-zero-devel" "intel-compute-runtime")
   dnf install -y "${rpm_list[@]}" "${intel_rpms[@]}"
 
   # shellcheck source=/dev/null
@@ -16,12 +16,13 @@ dnf_install_intel_gpu() {
 
 dnf_install() {
   local rpm_list=("python3" "python3-pip" "python3-argcomplete" \
-                  "python3-dnf-plugin-versionlock" "gcc-c++" "cmake" "vim" \
-                  "procps-ng" "git" "dnf-plugins-core" "libcurl-devel")
-  local vulkan_rpms=("vulkan-headers" "vulkan-loader-devel" "vulkan-tools" \
-                     "spirv-tools" "glslc" "glslang")
-  if [ "$containerfile" = "ramalama" ] || [ "$containerfile" = "rocm" ] || \
-    [ "$containerfile" = "vulkan" ]; then # All the UBI-based ones
+		  "python3-dnf-plugin-versionlock" "gcc-c++" "cmake" "vim" \
+		  "procps-ng" "git" "dnf-plugins-core" "libcurl-devel")
+  local ramalama_rpms=("vulkan-headers" "vulkan-loader-devel" "vulkan-tools" \
+		     "spirv-tools" "glslc" "glslang")
+
+  # All the UBI-based ones
+  if [ "$containerfile" = "ramalama" ] || [ "$containerfile" = "rocm" ]; then
     local url="https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm"
     dnf install -y "$url"
     crb enable # this is in epel-release, can only install epel-release via url
@@ -86,7 +87,7 @@ configure_common_flags() {
     cuda)
       common_flags+=("-DGGML_CUDA=ON" "-DCMAKE_EXE_LINKER_FLAGS=-Wl,--allow-shlib-undefined")
       ;;
-    vulkan | asahi)
+    ramalama | asahi)
       common_flags+=("-DGGML_VULKAN=1")
       ;;
     intel-gpu)
@@ -139,9 +140,9 @@ main() {
   case "$containerfile" in
     ramalama)
       if [ "$uname_m" = "x86_64" ] || [ "$uname_m" = "aarch64" ]; then
-        common_flags+=("-DGGML_KOMPUTE=ON" "-DKOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK=ON")
+	common_flags+=("-DGGML_KOMPUTE=ON" "-DKOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK=ON")
       else
-        common_flags+=("-DGGML_BLAS=ON" "-DGGML_BLAS_VENDOR=OpenBLAS")
+	common_flags+=("-DGGML_BLAS=ON" "-DGGML_BLAS_VENDOR=OpenBLAS")
       fi
       ;;
   esac

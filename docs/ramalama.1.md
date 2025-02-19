@@ -175,6 +175,21 @@ RamaLama uses builtin defaults if no ramalama.conf file is found.
 
 If the **RAMALAMA_CONFIG** environment variable is set, then its value is used for the ramalama.conf file rather than the default.
 
+## ENVIRONMENT VARIABLES
+
+RamaLama default behaviour can also be overridden via environment variables,
+although the recommended way is to use the ramalama.conf file.
+
+| ENV Name                  | Description                                |
+| ------------------------- | ------------------------------------------ |
+| RAMALAMA_CONFIG           | use this configuration file                |
+| RAMALAMA_CONTAINER_ENGINE | use this container engine (Podman/Docker)  |
+| RAMALAMA_FORCE_EMOJI      | use EMOJI with `ramalama run`              |
+| RAMALAMA_IMAGE            | use this container image for serving AI models |
+| RAMALAMA_IN_CONTAINER     | use containers for running AI Models       |
+| RAMALAMA_STORE            | use this directory to storing AI models    |
+| RAMALAMA_TRANSPORT        | use this model transport (ollama, huggingface, oci) |
+
 ## SEE ALSO
 **[podman(1)](https://github.com/containers/podman/blob/main/docs/podman.1.md)**, **docker(1)**, **[ramalama.conf(5)](ramalama.conf.5.md)**
 

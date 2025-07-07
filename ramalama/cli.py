@@ -195,18 +195,7 @@ The RAMALAMA_CONTAINER_ENGINE environment variable modifies default behaviour.""
     )
     parser.add_argument(
         "--image",
-        default=accel_image(CONFIG),
-        help="OCI container image to run with the specified AI model",
-        action=OverrideDefaultAction,
-        completer=local_images,
-    )
-    parser.add_argument(
-        "--keep-groups",
-        dest="podman_keep_groups",
-        default=CONFIG.keep_groups,
-        action="store_true",
-        help="""pass `--group-add keep-groups` to podman, if using podman.
-Needed to access gpu on some systems, but has security implications.""",
+        help=argparse.SUPPRESS,
     )
     parser.add_argument(
         "--nocontainer",
@@ -520,7 +509,7 @@ def info_cli(args):
         "Engine": {
             "Name": args.engine,
         },
-        "Image": args.image,
+        "Image": accel_image(CONFIG),
         "Runtime": args.runtime,
         "Store": args.store,
         "UseContainer": args.container,
@@ -789,6 +778,21 @@ def runtime_options(parser, command):
             help="IP address to listen",
             completer=suppressCompleter,
         )
+    parser.add_argument(
+        "--image",
+        default=accel_image(CONFIG),
+        help="OCI container image to run with the specified AI model",
+        action=OverrideDefaultAction,
+        completer=local_images,
+    )
+    parser.add_argument(
+        "--keep-groups",
+        dest="podman_keep_groups",
+        default=CONFIG.keep_groups,
+        action="store_true",
+        help="""pass `--group-add keep-groups` to podman, if using podman.
+        Needed to access gpu on some systems, but has security implications.""",
+    )
     if command == "run":
         parser.add_argument(
             "--keepalive", type=str, help="duration to keep a model loaded (e.g. 5m)", completer=suppressCompleter

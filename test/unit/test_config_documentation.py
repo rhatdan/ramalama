@@ -24,11 +24,7 @@ def get_config_fields():
         'verify',  # Runtime flag for model verification, not typically configured
     }
 
-    config_fields = [
-        field.name
-        for field in fields(BaseConfig)
-        if field.name not in excluded_fields
-    ]
+    config_fields = [field.name for field in fields(BaseConfig) if field.name not in excluded_fields]
     config_fields.extend(('images', 'rag_images', 'user'))
     return sorted(set(config_fields))
 
@@ -82,24 +78,15 @@ def get_documented_fields_in_manpage():
     # **api_key**=""
     # But exclude option values like **always**, **missing**, etc. which appear in pull documentation
     pattern = r'^\*\*([a-z_]+)\*\*'
-    documented = set()
+    all_matches = re.findall(pattern, content, re.MULTILINE)
 
     # Ignore values, not config keys
     ignored_values = {'always', 'missing', 'never', 'newer'}
-
-    for line in content.split('\n'):
-        match = re.match(pattern, line)
-        if match:
-            field_name = match.group(1)
-            # Filter out non-config markdown emphasis (like section names and option values)
-            if field_name not in {'table1', 'table2', 'table3', 'subtable1'} and field_name not in ignored_values:
-                documented.add(field_name)
+    documented = {field for field in all_matches if field not in ignored_values}
 
     # Also check for section headers like `[[ramalama.images]]`
     section_pattern = r'`\[\[ramalama\.([a-z_]+)\]\]`'
-    for match in re.finditer(section_pattern, content):
-        field_name = match.group(1)
-        documented.add(field_name)
+    documented.update(re.findall(section_pattern, content))
 
     return sorted(documented)
 

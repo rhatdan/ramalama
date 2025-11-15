@@ -24,16 +24,12 @@ def get_config_fields():
         'verify',  # Runtime flag for model verification, not typically configured
     }
 
-    config_fields = []
-    for field in fields(BaseConfig):
-        if field.name not in excluded_fields:
-            config_fields.append(field.name)
-
-    # Add nested fields that are documented
-    config_fields.append('images')  # Dict field that's documented
-    config_fields.append('rag_images')  # Dict field that's documented
-    config_fields.append('user')  # UserConfig nested field
-
+    config_fields = [
+        field.name
+        for field in fields(BaseConfig)
+        if field.name not in excluded_fields
+    ]
+    config_fields.extend(('images', 'rag_images', 'user'))
     return sorted(set(config_fields))
 
 

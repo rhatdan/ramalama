@@ -1219,26 +1219,32 @@ $ cat /usr/share/ramalama/shortnames.conf
 +-------+-------------------+
     |
     |
-    |           +------------------+           +------------------+
-    |           | Pull inferencing |           | Pull model layer |
-    +-----------| runtime (cuda)   |---------->| granite3-moe     |
-            +------------------+           +------------------+
-                           | Repo options:    |
-                           +-+-------+------+-+
-                             |       |      |
-                             v       v      v
-                         +---------+ +------+ +----------+
-                         | Hugging | | OCI  | | Ollama   |
-                         | Face    | |      | | Registry |
-                         +-------+-+ +---+--+ +-+--------+
-                             |       |      |
-                             v       v      v
-                           +------------------+
-                           | Start with       |
-                           | cuda runtime     |
-                           | and              |
-                           | granite3-moe     |
-                           +------------------+
+    |           +------------------+             +------------------+
+    |           | Pull model layer |             | Pull inferencing |
+    +-----------| granite3-moe     |------------>| runtime (cuda)   |
+                +------------------+             +------------------+
+                | Repo options:    |             | Engine options   |
+                +--+---------+----------+--+     +--+---------+--------------+--+
+                   |         |          |           |         |              |
+                   v         v          v           v         v              v
+                +---------+ +-----+ +--------+   +--------+ +--------+ +--------------+
+                | Hugging | | OCI | | Ollama |   | Podman | | Docker | | No container |
+                | Face    | |     | |        |   +---+----+ +---+----+ +------+-------+
+                +---+-----+ +-----+ +---+----+       |          |               |
+                    |       |           |            v          v               |
+                    v       v           v        +----------------------+       |
+                +----------------------------+   | Pull (cuda) container|       |
+                | Pull granite3-moe model    |   | image with software  |       |
+                | and store locally.         |   | matching local GPU   |       |
+                +----------------------------+   +----------------------+       |
+                                                          |                     |
+                                                          v                     v
+                                                 +-------------------------+  +---------------------+
+                                                 | Launch containerized    |  | Launch locally      |
+                                                 | runtime serving         |  | installed runtime   |
+                                                 | granite3-moe mounted    |  | serving granite3-moe|
+                                                 | into container          |  +---------------------+
+                                                 ---------------------------
 ```
 
 ## In development
